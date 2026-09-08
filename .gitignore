@@ -6,6 +6,7 @@ dist/
 wheels/
 *.egg-info
 *.log
+data/
 reports/
 .pytest_cache/
 .ruff_cache/
