@@ -28,7 +28,7 @@ weather_pipeline/
 
 ---
 
-## Features & Course Topics Covered
+## Features
 
 * **Environment & Package Management:** Managed via `uv` for fast dependency resolution and execution using `pyproject.toml` and `uv.lock`.
 * **Data Cleaning & Regex:** Uses regular expressions (`re`) and pandas string accessors (`.str`) to strip invalid characters, trim whitespace, and normalize casing.
