@@ -1,9 +1,14 @@
 import json
 import os
-from unittest.mock import MagicMock, patch
+import pytest
+from unittest.mock import AsyncMock, MagicMock, patch
 
-from src.pipeline import clean_city_data, fetch_weather, transform_and_export
-
+from src.pipeline import (
+    clean_city_data,
+    fetch_weather,
+    fetch_weather_async,
+    transform_and_export,
+)
 
 # 1. Unit test for data normalization
 # Verifies that the city name cleaning logic handles all relevant cases
@@ -18,8 +23,7 @@ def test_clean_city_data(tmp_path):
     assert list(data_frame["CityName"]) == ["Paris", "Tokyo"]
     assert len(data_frame) == 2
 
-
-# 2. Unit test for API mocking
+# 2.1. Unit test for API mocking
 # Mocks an HTTP GET response to verify API handling before reaching Open-Meteo
 # This unit test works for the sync version of the API integration
 @patch("src.pipeline.httpx.Client.get")
@@ -41,6 +45,34 @@ def test_fetch_weather(mock_get):
 
     # Execute the function on the mock client and mock response data
     result = fetch_weather(mock_client, "Paris", 48.85, 2.35)
+
+    assert result["city"] == "Paris"
+    assert result["data"]["temperature_2m"][0] == 22.5
+
+
+# 2.2. Unit test for API mocking
+# Mocks an HTTP GET response to verify API handling before reaching Open-Meteo
+# This unit test works for the async version of the API integration
+@pytest.mark.asyncio
+@patch("src.pipeline.httpx.Client.get")
+async def test_fetch_weather_async(mock_get):
+    # Create a mock HTTP GET response
+    mock_response = MagicMock()
+    mock_response.raise_for_status.return_value = None
+    mock_response.json.return_value = {
+        "hourly": {
+            "time": ["2026-01-01T00:00"],
+            "temperature_2m": [22.5],
+            "precipitation": [0.0],
+        }
+    }
+
+    # Create a mock HTTP GET client
+    mock_client = AsyncMock()
+    mock_client.get.return_value = mock_response
+
+    # Execute the function on the mock client and mock response data
+    result = await fetch_weather_async(mock_client, "Paris", 48.85, 2.35)
 
     assert result["city"] == "Paris"
     assert result["data"]["temperature_2m"][0] == 22.5
