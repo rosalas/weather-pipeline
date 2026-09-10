@@ -10,6 +10,7 @@ from src.pipeline import (
     transform_and_export,
 )
 
+
 # 1. Unit test for data normalization
 # Verifies that the city name cleaning logic handles all relevant cases
 def test_clean_city_data(tmp_path):
@@ -22,6 +23,7 @@ def test_clean_city_data(tmp_path):
 
     assert list(data_frame["CityName"]) == ["Paris", "Tokyo"]
     assert len(data_frame) == 2
+
 
 # 2.1. Unit test for API mocking
 # Mocks an HTTP GET response to verify API handling before reaching Open-Meteo
