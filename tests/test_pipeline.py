@@ -1,7 +1,8 @@
 import json
 import os
-import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
 
 from src.pipeline import (
     clean_city_data,
